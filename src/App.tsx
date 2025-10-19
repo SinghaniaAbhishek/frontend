@@ -4,9 +4,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { DataProvider } from "@/contexts/DataContext";
-import Landing from "./pages/Landing";
+
 import Welcome from "./pages/Welcome";
-import NewLanding from "./pages/NewLanding";
+
 import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
 import Goals from "./pages/Goals";
@@ -39,7 +39,8 @@ const App = () => {
       <DataProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<NewLanding />} />
+            <Route path="/" element={<Navigate to="/welcome" replace />} />
+
             <Route path="/welcome" element={<Welcome />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/expenses" element={<Expenses />} />
