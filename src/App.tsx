@@ -13,7 +13,7 @@ import Debts from "./pages/Debts";
 import Insights from "./pages/Insights";
 import ChallengePage from "./pages/Challenge";
 import Settings from "./pages/Settings";
-
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import FinanceChatbot from "./components/FinanceChatbot";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
@@ -21,39 +21,100 @@ import { useEffect } from "react";
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Initialize theme to light mode on app start
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' || 'light';
+    const savedTheme =
+      (localStorage.getItem("theme") as "light" | "dark") || "light";
     const root = document.documentElement;
-    root.classList.remove('dark');
-    root.classList.toggle('dark', savedTheme === 'dark');
+    root.classList.remove("dark");
+    root.classList.toggle("dark", savedTheme === "dark");
   }, []);
 
   return (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <DataProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/expenses" element={<Expenses />} />
-            <Route path="/goals" element={<Goals />} />
-            <Route path="/bills" element={<Bills />} />
-            <Route path="/debts" element={<Debts />} />
-            <Route path="/insights" element={<Insights />} />
-            <Route path="/challenge" element={<ChallengePage />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-    
-          <FinanceChatbot />
-        </BrowserRouter>
-      </DataProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <DataProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public */}
+              <Route path="/" element={<Welcome />} />
+
+              {/* Protected */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/expenses"
+                element={
+                  <ProtectedRoute>
+                    <Expenses />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/goals"
+                element={
+                  <ProtectedRoute>
+                    <Goals />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/bills"
+                element={
+                  <ProtectedRoute>
+                    <Bills />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/debts"
+                element={
+                  <ProtectedRoute>
+                    <Debts />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/insights"
+                element={
+                  <ProtectedRoute>
+                    <Insights />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/challenge"
+                element={
+                  <ProtectedRoute>
+                    <ChallengePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Fallback */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+
+            <FinanceChatbot />
+          </BrowserRouter>
+        </DataProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 

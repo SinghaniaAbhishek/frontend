@@ -19,28 +19,35 @@ const Welcome = () => {
 
   const { refreshData } = useData();
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (isLogin) {
-        const { token } = await api.login(email, password);
-        if (token) {
-          setAuthToken(token);
-          toast.success('Welcome back! 🎉');
-        }
-      } else {
-        const { token } = await api.signup(name, email, password);
-        if (token) {
-          setAuthToken(token);
-          toast.success('Account created successfully! 🎊');
-        }
+  e.preventDefault();
+  try {
+    let token;
+
+    if (isLogin) {
+      const res = await api.login(email, password);
+      token = res?.token;
+      if (token) {
+        setAuthToken(token);
+        localStorage.setItem("user", JSON.stringify({ email })); // ✅ added
+        toast.success('Welcome back! 🎉');
       }
-      // ensure data is loaded before navigating
-      await refreshData();
-      navigate('/dashboard');
-    } catch (err: any) {
-      toast.error(err?.message || 'Authentication failed');
+    } else {
+      const res = await api.signup(name, email, password);
+      token = res?.token;
+      if (token) {
+        setAuthToken(token);
+        localStorage.setItem("user", JSON.stringify({ email })); // ✅ added
+        toast.success('Account created successfully! 🎊');
+      }
     }
-  };
+
+    // ensure data is loaded before navigating
+    await refreshData();
+    navigate('/dashboard');
+  } catch (err: any) {
+    toast.error(err?.message || 'Authentication failed');
+  }
+};
 
   const features = [
     { icon: Wallet, title: 'Track Expenses', desc: 'Monitor every rupee' },
