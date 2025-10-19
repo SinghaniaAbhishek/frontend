@@ -1,4 +1,4 @@
-const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'https://backend-production-269d1.up.railway.app/api';
+const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -45,6 +45,8 @@ export const api = {
   setTheme: (theme: string) => request(`/settings/theme`, 'PUT', { theme }),
   getBudget: () => request(`/settings/budget`, 'GET'),
   setBudget: (monthlyBudget: number, currency: string) => request(`/settings/budget`, 'PUT', { monthlyBudget, currency }),
+  getEmailReminders: () => request(`/settings/email-reminders`, 'GET'),
+  setEmailReminders: (emailReminders: boolean, reminderTime: string) => request(`/settings/email-reminders`, 'PUT', { emailReminders, reminderTime }),
   resetData: () => request(`/settings/reset-data`, 'POST'),
   exportCsv: () => request(`/settings/export`, 'GET'),
 
