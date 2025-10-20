@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import api, { setAuthToken } from '@/lib/api';
 import { useData } from '@/contexts/DataContext';
 import ThemeToggle from '@/components/ThemeToggle';
+import OnboardingPopup from '@/components/OnboardingPopup';
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const Welcome = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
 
   const { refreshData } = useData();
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,6 +34,9 @@ const Welcome = () => {
         localStorage.setItem("user", JSON.stringify({ email })); // ✅ added
         toast.success('Welcome back! 🎉');
       }
+      // ensure data is loaded before navigating
+    await refreshData();
+    navigate('/dashboard');
     } else {
       const res = await api.signup(name, email, password);
       token = res?.token;
@@ -38,16 +44,32 @@ const Welcome = () => {
         setAuthToken(token);
         localStorage.setItem("user", JSON.stringify({ email })); // ✅ added
         toast.success('Account created successfully! 🎊');
+        setIsNewUser(true);
+        setShowOnboarding(true);
       }
     }
 
-    // ensure data is loaded before navigating
-    await refreshData();
-    navigate('/dashboard');
+    
   } catch (err: any) {
     toast.error(err?.message || 'Authentication failed');
   }
 };
+const handleOnboardingComplete = async () => {
+    setShowOnboarding(false);
+    // Refresh user data to get the updated profile information
+    try {
+      console.log('Onboarding completed, refreshing user data...');
+      const userData = await api.me();
+      console.log('Updated user data:', userData);
+      // Update the user data in context if needed
+      // ensure data is loaded before navigating
+      await refreshData();
+      console.log('Data refreshed successfully');
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+    }
+    navigate('/dashboard');
+  };
 
   const features = [
     { icon: Wallet, title: 'Track Expenses', desc: 'Monitor every rupee' },
@@ -163,6 +185,11 @@ const Welcome = () => {
           </Card>
         </motion.div>
       </div>
+       {/* Onboarding Popup */}
+      <OnboardingPopup 
+        isOpen={showOnboarding} 
+        onComplete={handleOnboardingComplete} 
+      />
     </div>
   );
 };
