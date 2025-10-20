@@ -1,4 +1,4 @@
-const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
+const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'https://backend-production-269d1.up.railway.app/api';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
