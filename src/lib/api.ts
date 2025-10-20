@@ -1,4 +1,4 @@
-const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'https://backend-production-269d1.up.railway.app/api';
+const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -39,6 +39,7 @@ export const api = {
   signup: (name: string, email: string, password: string) => request<{ token: string; user: any }>(`/auth/signup`, 'POST', { name, email, password }),
   login: (email: string, password: string) => request<{ token: string; user: any }>(`/auth/login`, 'POST', { email, password }),
   me: () => request(`/auth/me`, 'GET'),
+  updateProfile: (profileData: { income: number; incomeSource: string; monthlyBudget: number }) => request(`/auth/profile`, 'PUT', profileData),
 
   // settings
   getTheme: () => request(`/settings/theme`, 'GET'),
